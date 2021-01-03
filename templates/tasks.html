@@ -9,15 +9,18 @@
   <body>
     <div class="ui container">
     <h1>Hi {{ name }}</h1>
-      <form class="ui form" action="/add" method='post'>
-        <div>
-        <label for="name">Name</label>
-        <input type="text" name="name" placeholder="Name the task"></input>
-        <!-- <label for="due">Due:</label>
-        <input type="date" name="due"> -->
-        <button class="ui blue button" type="submit">Add</button>
-        </div>
+      <h2>Add Task</h2>
+      <div class="ui segment">
+        <form class="ui form" action="/add" method='post'>
+          <label for="name">Name</label>
+          <input type="text" name="name" placeholder="Name the task" maxlength="50" size="50"></input>
+          <label for="description">Description</label>
+          <input type="text" name="description" placeholder="Describe it" maxlength="500" size="500"></input>
+          <label for="due">Due</label>
+          <input type="date" name="due" placeholder="Pick a due date" maxlength="20" size="20">
+          <button class="ui blue button" type="submit">Add</button>
       </form>
+      </div>
 
       {% if open_tasks %}
         <h2>Open tasks</h2>
@@ -25,9 +28,10 @@
         <div class="ui segment">
           <p>
           No. {{ task.id }} <h3>{{ task.name }}</h3>
+          <a class="ui white button" href='/details/{{ task.id }}'>Details</a>
           <a class="ui blue button" href='/done/{{ task.id }}'>Mark done</a>
-          Due: {% if task.due == True %} <span class="ui yellow label">due XX-XX</span> {% else %} <span class="ui gray label">no due date</span> {% endif %}
           <a class="ui red button"href='/delete/{{ task.id }}'>Delete</a>
+          Due: {% if task.due %} <span class="ui yellow label">{{ task.due }}</span> {% else %} <span class="ui gray label">No due date</span> {% endif %}
           </p>
         </div>
         {% endfor %}
@@ -41,9 +45,10 @@
         <div class="ui segment">
           <p>
           No. {{ task.id }} <h3>{{ task.name }}</h3>
+          <a class="ui white button" href='/details/{{ task.id }}'>Details</a>
           <a class="ui blue button" href='/undone/{{ task.id }}'>Mark undone</a>
-          Due: {% if task.due == True %} <span class="ui yellow label">due XX-XX</span> {% else %} <span class="ui gray label">no due date</span> {% endif %}
           <a class="ui red button"href='/delete/{{ task.id }}'>Delete</a>
+          Due: {% if task.due %} <span class="ui yellow label">{{ task.due }}</span> {% else %} <span class="ui gray label">No due date</span> {% endif %}
           </p>
         </div>
         {% endfor %}
@@ -54,9 +59,9 @@
       {% with messages = get_flashed_messages() %}
       {% if messages %}
       <h2>Messages</h2>
-      <ul class="flashes ui info message" >
+      <ul >
       {% for message in messages %}
-        <li>{{ message }}</li>
+        <li class="flashes ui info message">{{ message }}</li>
       {% endfor %}
       </ul>
       {% endif %}

@@ -1,4 +1,5 @@
 from flask import Flask, flash, render_template, request, redirect, url_for
+from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -11,9 +12,10 @@ db = SQLAlchemy(app)
 
 class Task(db.Model):
   id = db.Column(db.Integer, primary_key=True)
-  name = db.Column(db.String(100))
+  name = db.Column(db.String(50))
+  description = db.Column(db.Text(), default="No description")
   done = db.Column(db.Boolean)
-  # due = db.Column(db.DateTime)
+  due = db.Column(db.String(20), default="Later")
 
 @app.route("/")
 def index():
@@ -24,12 +26,28 @@ def index():
 @app.route("/add", methods=['POST'])
 def add():
   name = request.form.get('name')
-  # due = request.form.get('due')
-  new_task = Task(name=name, done=False)
+  description = request.form.get('description')
+  due = request.form.get('due')
+  new_task = Task(name=name, description=description, due=due, done=False)
   db.session.add(new_task)
   db.session.commit()
   flash('Task added.')
   return redirect(url_for('index'))
+
+@app.route("/update/<int:id>", methods=['POST'])
+def update(id):
+  task = Task.query.filter_by(id=id).first()
+  task.name = request.form.get('name')
+  task.description = request.form.get('description')
+  task.due = request.form.get('due')
+  db.session.commit()
+  flash('Task updated.')
+  return redirect(url_for('index'))
+
+@app.route("/details/<int:id>")
+def details(id):
+  task = Task.query.filter_by(id=id).first()
+  return render_template('task.html', task=task)
 
 @app.route("/done/<int:id>")
 def done(id):
@@ -56,4 +74,6 @@ def delete(id):
   return redirect(url_for('index'))
 
 db.create_all()
-app.run(debug=True)
+
+if __name__ == "__main__":
+  app.run(debug=True)

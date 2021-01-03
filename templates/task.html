@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Tasks</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+  </head>
+  <body>
+    <div class="ui container">
+
+      {% if task %}
+      <h2>Edit Task</h2>
+      <div class="ui segment">
+        <form class="ui form" action="/update/{{ task.id }}" method='post'>
+          <label for="name">Name</label>
+          <input type="text" name="name" value="{{ task.name}}" placeholder="Name the task" maxlength="50" size="50"></input>
+          <label for="description">Description</label>
+          <input type="text" name="description" value="{{ task.description }}" placeholder="Describe it" maxlength="500" size="500"></input>
+          <label for="due">Due</label>
+          <input type="date" name="due" value="{{ task.due }}" placeholder="Pick a due date" maxlength="20" size="20">
+          <button class="ui blue button" type="submit">Update</button>
+      </form>
+      </div>
+
+      <h2>About the Task</h2>
+      <div class="ui segment">
+        <p>
+        No. {{ task.id }}<h3>{{ task.name }}</h3>
+        <p>{{ task.description }}</p>
+        <a class="ui blue button" href='/done/{{ task.id }}'>Mark done</a>
+        <a class="ui red button" href='/delete/{{ task.id }}'>Delete</a>
+        Due: {% if task.due %} <span class="ui yellow label">{{ task.due }}</span> {% else %} <span class="ui gray label">No due date</span> {% endif %}
+        </p>
+      </div>
+
+      {% else %}
+      <h2>No task here. <a href='/'>Go back</a></h2>
+      {% endif %}
+
+      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      <h2>Messages</h2>
+      <ul >
+      {% for message in messages %}
+        <li class="flashes ui info message">{{ message }}</li>
+      {% endfor %}
+      </ul>
+      {% endif %}
+      {% endwith %}
+
+    </div>
+  </body>
+</html>

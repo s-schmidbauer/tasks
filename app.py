@@ -1,9 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, flash, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 name = "Stefan"
 db = SQLAlchemy(app)
@@ -27,6 +28,7 @@ def add():
   new_task = Task(name=name, done=False)
   db.session.add(new_task)
   db.session.commit()
+  flash('Task added.')
   return redirect(url_for('index'))
 
 @app.route("/done/<int:id>")
@@ -34,6 +36,7 @@ def done(id):
   task = Task.query.filter_by(id=id).first()
   task.done = True
   db.session.commit()
+  flash('Task marked as done.')
   return redirect(url_for('index'))
 
 @app.route("/undone/<int:id>")
@@ -41,12 +44,15 @@ def undone(id):
   task = Task.query.filter_by(id=id).first()
   task.done = False
   db.session.commit()
+  flash('Task marked as open.')
   return redirect(url_for('index'))
 
 @app.route("/delete/<int:id>")
 def delete(id):
   task = Task.query.filter_by(id=id).first()
   db.session.delete(task)
+  db.session.commit()
+  flash('Task deleted')
   return redirect(url_for('index'))
 
 db.create_all()

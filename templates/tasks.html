@@ -20,7 +20,7 @@
       </form>
 
       {% if open_tasks %}
-        <h2>Open tasks:</h2>
+        <h2>Open tasks</h2>
         {% for task in open_tasks %}
         <div class="ui segment">
           <p>
@@ -36,7 +36,7 @@
       {% endif %}
 
       {% if done_tasks %}
-        <h2>Done tasks:</h2>
+        <h2>Done tasks</h2>
         {% for task in done_tasks %}
         <div class="ui segment">
           <p>
@@ -50,6 +50,17 @@
       {% else %}
       <h2>There are no done tasks.</h2>
       {% endif %}
+
+      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      <h2>Messages</h2>
+      <ul class="flashes ui info message" >
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+      </ul>
+      {% endif %}
+      {% endwith %}
 
     </div>
   </body>
